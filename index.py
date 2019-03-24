@@ -21,7 +21,7 @@ field = \
 
 #field = numpy.array(field1).transpose()
 
-def function(coord, s):
+def function1(coord, s):
     '''
     Функция принадлежности координаты coord полосе с номером s (s принадлежит 0 до 9, coord - 0:100)
     :param coord:
@@ -81,7 +81,7 @@ def function3(coord, s):
     else:
         return 0
 
-def get_alpha(coord_x, coord_y):
+def get_alpha(coord_x, coord_y, function):
     '''
     Вычисляет угол по данным координатам
     :param coord_x:
@@ -95,9 +95,9 @@ def get_alpha(coord_x, coord_y):
     for i in range(10):
         for j in range(10):
             '''принадлежность координаты x полосе i'''
-            x = function2(coord_x, i)
+            x = function(coord_x, i)
             '''принадлежность координаты y полосе j'''
-            y = function2(coord_y, j)
+            y = function(coord_y, j)
             c = x*y   #то, что Селедков говорил "Либо произведение, либо минимум из двух значений"
             if c != 0:
                 print('x = ' + str(x) + ' i = ' + str(i) + ' y = ' + str(y) + ' j = ' + str(j))
@@ -122,7 +122,7 @@ def get_alpha(coord_x, coord_y):
         a += coeff[i]*corners[i]
     return a/b
 
-def get_next_coord(coord_x, coord_y, alpha_res):
+def get_next_coord(coord_x, coord_y, alpha_res, step):
     '''
     Вычисление следующей координаты по предыдущей координата и углу поворота
     :param coord_x:
@@ -130,28 +130,33 @@ def get_next_coord(coord_x, coord_y, alpha_res):
     :param alpha_res:
     :return:
     '''
-    step = 3  # длина орезка
+    step = 1  # длина орезка
     next_coord_y = step*math.sin((alpha_res*math.pi)/180) + coord_y
     next_coord_x = step*math.cos((alpha_res*math.pi)/180) + coord_x
     return [next_coord_x, next_coord_y]
 
-def main():
+def main(function, step, file_name):
     start_pos = [50, 50]
-    alpha = get_alpha(start_pos[0], start_pos[1])
+    alpha = get_alpha(start_pos[0], start_pos[1], function)
     print('alpha = ' + str(alpha))
-    next_pos = get_next_coord(start_pos[0], start_pos[1], alpha)
+    next_pos = get_next_coord(start_pos[0], start_pos[1], alpha, step)
     print(next_pos)
-    num_iter = 100  # количество отрисованных отрезков
+    num_iter = 300//step  # количество отрисованных отрезков
     for i in range(num_iter):
         '''
         draw - отрисовка линии
         возвращает вторую точку
         '''
-        start_pos = P.draw(start_pos, next_pos, png_file='func3.png')
-        alpha = get_alpha(start_pos[0], start_pos[1])
+        start_pos = P.draw(start_pos, next_pos, png_file=file_name)
+        alpha = get_alpha(start_pos[0], start_pos[1], function)
         print('alpha = ' + str(alpha))
-        next_pos = get_next_coord(start_pos[0], start_pos[1], alpha)
+        next_pos = get_next_coord(start_pos[0], start_pos[1], alpha, step)
         print(next_pos)
     print('end')
 
-main()
+
+
+for i in range(1, 4):
+    main(function1, i, 'funk1_step' + str(i)+'.png')
+    main(function2, i, 'funk2_step' + str(i) + '.png')
+    main(function3, i, 'funk3_step' + str(i) + '.png')
