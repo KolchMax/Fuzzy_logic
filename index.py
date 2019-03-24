@@ -19,64 +19,27 @@ field = \
     [135, 135, 150, 180, 180, 180, 180, 210, 225, 225]
 ]
 
-#field = numpy.array(field1).transpose()
-
-def function1(coord, s):
-    '''
-    Функция принадлежности координаты coord полосе с номером s (s принадлежит 0 до 9, coord - 0:100)
-    :param coord:
-    :param s:
-    :return:
-    '''
-    '''
-    Если робот выходит за границы поля - он принадлежит крайней полосе
-    '''
+def func1(coord, s):
     if coord <= 0 and s == 0:
         return 1
     if coord >= 100 and s == 9:
         return 1
-    if (coord - (s*10 - 5) > 0) and (coord - ((s+1)*10 + 5) <= 0):
-        if coord <= (s*10+5):
-            return abs(10 - abs(coord - s*10 - 5))/10
-        else:
-            return abs(10 - abs(coord - s*10 + 5))/10
+    a = (-abs(coord - s*10)+10)/10
+    if a >= 0:
+        return a
     else:
         return 0
 
-def function2(coord, s):
+def func2(coord, s):
     if coord <= 0 and s == 0:
         return 1
     if coord >= 100 and s == 9:
         return 1
-    if (coord - (s*10 - 5) > 0) and (coord - ((s+1)*10 + 5) <= 0):
-        if coord <= (s*10+5):
-            a = abs(10 - 2*abs(coord - s*10 - 5))/10
-            if a > 1:
-                return 1
-            return a
+    a = (-2*abs(coord - s*10)+15)/10
+    if a >= 0:
+        if a > 1:
+            return 1
         else:
-            a = abs(10 - 2*abs(coord - s*10 + 5))/10
-            if a > 1:
-                return 1
-            return a
-    else:
-        return 0
-
-def function3(coord, s):
-    if coord <= 0 and s == 0:
-        return 1
-    if coord >= 100 and s == 9:
-        return 1
-    if (coord - (s*10 - 5) > 0) and (coord - ((s+1)*10 + 5) <= 0):
-        if coord <= (s*10+5):
-            a = abs(10 - 3*abs(coord - s*10 - 5))/10
-            if a > 1:
-                return 1
-            return a
-        else:
-            a = abs(10 - 3*abs(coord - s*10 + 5))/10
-            if a > 1:
-                return 1
             return a
     else:
         return 0
@@ -130,13 +93,13 @@ def get_next_coord(coord_x, coord_y, alpha_res, step):
     :param alpha_res:
     :return:
     '''
-    step = 1  # длина орезка
+    # длина орезка
     next_coord_y = step*math.sin((alpha_res*math.pi)/180) + coord_y
     next_coord_x = step*math.cos((alpha_res*math.pi)/180) + coord_x
     return [next_coord_x, next_coord_y]
 
-def main(function, step, file_name):
-    start_pos = [50, 50]
+def main(function, step, file_name, fig_id=1):
+    start_pos = [0, 0]
     alpha = get_alpha(start_pos[0], start_pos[1], function)
     print('alpha = ' + str(alpha))
     next_pos = get_next_coord(start_pos[0], start_pos[1], alpha, step)
@@ -147,16 +110,11 @@ def main(function, step, file_name):
         draw - отрисовка линии
         возвращает вторую точку
         '''
-        start_pos = P.draw(start_pos, next_pos, png_file=file_name)
+        start_pos = P.draw(start_pos, next_pos, png_file=file_name, fig_num=fig_id)
         alpha = get_alpha(start_pos[0], start_pos[1], function)
         print('alpha = ' + str(alpha))
         next_pos = get_next_coord(start_pos[0], start_pos[1], alpha, step)
         print(next_pos)
     print('end')
 
-
-
-for i in range(1, 4):
-    main(function1, i, 'funk1_step' + str(i)+'.png')
-    main(function2, i, 'funk2_step' + str(i) + '.png')
-    main(function3, i, 'funk3_step' + str(i) + '.png')
+main(function=func1, step=1, file_name='start_pos00_func1_step1.png')
