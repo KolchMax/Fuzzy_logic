@@ -90,7 +90,7 @@ def get_alpha(coord_x, coord_y, function):
             x = function(coord_x, i)
             '''принадлежность координаты y полосе j'''
             y = function(coord_y, j)
-            c = x*y   #то, что Селетков говорил "Либо произведение, либо минимум из двух значений"
+            c = x*y   #конъюнкция
             if c != 0:
                 print('x = ' + str(x) + ' i = ' + str(i) + ' y = ' + str(y) + ' j = ' + str(j))
                 print('c = ' + str(c))
