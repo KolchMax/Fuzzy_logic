@@ -20,22 +20,34 @@ field = \
 ]
 
 def func1(coord, s):
+    '''
+    треугольная функция
+    :param coord:
+    :param s:
+    :return:
+    '''
     if coord <= 0 and s == 0:
         return 1
     if coord >= 100 and s == 9:
         return 1
-    a = (-abs(coord - s*10)+10)/10
+    a = (-abs(coord - s*10 - 5)+10)/10
     if a >= 0:
         return a
     else:
         return 0
 
 def func2(coord, s):
+    '''
+    трапеция
+    :param coord:
+    :param s:
+    :return:
+    '''
     if coord <= 0 and s == 0:
         return 1
     if coord >= 100 and s == 9:
         return 1
-    a = (-2*abs(coord - s*10)+15)/10
+    a = (-2*abs(coord - s*10 - 5)+15)/10
     if a >= 0:
         if a > 1:
             return 1
@@ -43,6 +55,23 @@ def func2(coord, s):
             return a
     else:
         return 0
+
+def func3(coord, s, sigm=7):
+    '''
+    функция Гаусса
+    :param coord:
+    :param s:
+    :param sigm:
+    :return:
+    '''
+    if coord <= 0 and s == 0:
+        return 1
+    if coord >= 100 and s == 9:
+        return 1
+    a = math.exp(-pow((coord-10*s-5), 2)/sigm)
+    if a < 0.00001:
+        return 0
+    return a
 
 def get_alpha(coord_x, coord_y, function):
     '''
@@ -61,18 +90,27 @@ def get_alpha(coord_x, coord_y, function):
             x = function(coord_x, i)
             '''принадлежность координаты y полосе j'''
             y = function(coord_y, j)
-            c = x*y   #то, что Селедков говорил "Либо произведение, либо минимум из двух значений"
+            c = x*y   #то, что Селетков говорил "Либо произведение, либо минимум из двух значений"
             if c != 0:
                 print('x = ' + str(x) + ' i = ' + str(i) + ' y = ' + str(y) + ' j = ' + str(j))
                 print('c = ' + str(c))
                 corners.append(field[i][j])
                 coeff.append(c)
     '''Цикл нормализующий углы для вчисления среднего между ними'''
-    for i in range(len(corners)):
+    '''for i in range(len(corners)):
         k = i+1
         for j in range(k, len(corners)):
             if corners[j] - corners[i] > 180:
-                corners[i] += 360
+                corners[i] += 360'''
+
+    sr = corners[0]
+    for i in range(1, len(corners)):
+        if sr - corners[i] > 180:
+            corners[i] += 360
+        elif corners[i]-sr > 180:
+            corners[i] -= 360
+        sr = (sr/i + corners[i])/(i + 1)
+
     '''
     Центр масс:
     alpha_result = sum(A_ij(coord)*alpha_ij)/sum(A_ij(coord))
@@ -99,7 +137,7 @@ def get_next_coord(coord_x, coord_y, alpha_res, step):
     return [next_coord_x, next_coord_y]
 
 def main(function, step, file_name, fig_id=1):
-    start_pos = [0, 0]
+    start_pos = [50, 50]
     alpha = get_alpha(start_pos[0], start_pos[1], function)
     print('alpha = ' + str(alpha))
     next_pos = get_next_coord(start_pos[0], start_pos[1], alpha, step)
@@ -117,4 +155,4 @@ def main(function, step, file_name, fig_id=1):
         print(next_pos)
     print('end')
 
-main(function=func1, step=1, file_name='start_pos00_func1_step1.png')
+#main(function=func3, step=1, file_name='start_pos5050_func3_step1_v3.png')

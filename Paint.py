@@ -11,6 +11,10 @@ def draw(point1, point2, png_file = 'picture.png', fig_num=1):
     :return:
     '''
     try:
+        #fig, ax = plt.subplots()
+        #  Добавляем подписи к осям:
+        #ax.set_xlabel('x')
+        #ax.set_ylabel('y')
         a = np.array([point1, point2])
         a = a.transpose()
         xData = a[0]
